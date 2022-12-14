@@ -4,6 +4,8 @@ filter!(x -> !isempty(x), rawData)
 data = split.(rawData, ':')
 
 # part one
+
+# 解析数据，并生成函数
 ex = Expr(:block)
 for ind in 1:6:length(data)
     push!(ex.args, :(
@@ -20,17 +22,17 @@ for ind in 1:6:length(data)
 end
 eval(ex)
 
+# 生成初始数据
 exItems = Expr(:vect)
 for ind in 1:6:length(data)
     oneItem = Expr(:vect)
     append!(oneItem.args, parse.(Int, split(strip(data[ind+1][2]), ",")))
     push!(exItems.args, oneItem)
 end
-
 monkeyItems = eval(exItems)
 
+# 进行模拟，记录数据
 ts = zeros(Int, length(monkeyItems))
-
 for time in 1:20
     for i in 1:length(monkeyItems)
         if length(monkeyItems[i]) != 0
@@ -48,13 +50,12 @@ end
 println(prod(sort(ts, rev=true)[1:2]))
 
 
-
 # part two
 
-
 begin
-    valueManager = 1
 
+    # 新的数据管理器
+    valueManager = 1
     for ind in 1:6:length(data)
         valueManager *= parse(Int, split(strip(data[ind+3][2]), " ")[end])
     end
