@@ -1,9 +1,10 @@
+# 读取数据
 rawData = readlines("data/day13.txt")
 filter!(x -> x != "", rawData)
 data = @. eval(Meta.parse(rawData))
 
+# 重载compare函数，使其可以比较嵌套数组
 compare(a::Int64, b::Int64) = a < b
-
 function compare(a::Vector, b::Int64)
     isempty(a) && return true
     return compare(a, [b])
@@ -13,6 +14,7 @@ function compare(a::Int64, b::Vector)
     return compare([a], b)
 end
 
+# 重载isequal函数，使其可以比较嵌套数组
 isequal(a::Int64, b::Int64) = a == b
 function isequal(a::Vector, b::Int64)
     isempty(a) && return false
@@ -22,22 +24,6 @@ function isequal(a::Int64, b::Vector)
     isempty(b) && return false
     return isequal([a], b)
 end
-
-# function compare(a::Vector, b::Vector)
-#     isempty(a) && isempty(b) && return true
-#     isempty(a) && !isempty(b) && return true
-#     isempty(b) && !isempty(a) && return false
-#     if isequal(first(a), first(b))
-#         popfirst!(a)
-#         popfirst!(b)
-#         return compare(a, b)
-#     else
-#         return compare(a[1], b[1])
-#     end
-# end
-
-# compare([10, 1], [[10, 0], 6, [8, 6, 7], 1, 2]
-# )
 
 # 展平嵌套数组
 # function flatten(arr::Vector)
@@ -55,20 +41,6 @@ end
 #     return res
 # end
 
-# 递归比较两个嵌套数组
-
-# s = 0
-# for i in 2:2:lastindex(data)
-#     fa = flatten(data[i-1])
-#     fb = flatten(data[i])
-#     # println(fa)
-#     # println(fb)
-#     if fa < fb
-#         global s += i >> 1
-#     end
-#     println("******* s = $s *******")
-# end
-# s
 
 # 递归比较两个嵌套数组
 function compare(a::Vector, b::Vector)
@@ -106,20 +78,22 @@ function isequal(a::Vector, b::Vector)
             return false
         end
     end
-    return true
+    # 只有当两个数组都遍历完毕时且长度相等时，才返回true
+    aend == bend && return true
+    return false
 end
 
+# part one
 s = 0
 for i in 2:2:lastindex(data)
     if compare(data[i-1], data[i])
         global s += i >> 1
     end
 end
-s
+println("Part one answer: ", s)
 
-# v = [
-#     [[[4,5,10],[7,[10,3,1],[2,6],10],[[6,0,8,9,6],4,[]],[]],[9,[],10]],
-#     [[],[7],[10,10,[6]],[[[2,4],[6,2,2],0],6],[[[2,3,0,0,2],[6,5,7,2],2,4],6,6]]
-    
-# ]
-# compare(v[1], v[2])
+# part two
+newdata = deepcopy(data)
+push!(newdata, [[2]], [[6]])
+sort!(newdata, lt=compare)
+println("Part two answer: ", prod(findall(x -> x == [[2]] || x == [[6]], newdata)))
