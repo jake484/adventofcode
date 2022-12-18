@@ -1,11 +1,8 @@
 # 读取数据
 rawData = readlines("data/day15.txt")
 
-# 用':'和','分割数据
-rawData = split.(rawData, (c -> c == ',' || c == ':'))
-
 # 用正则表达式提取数字字符串数组中的数字
-data = map(x -> map(y -> parse(Int, match(r"[0-9]+", y).match), x), rawData)
+data = map(x -> map(y -> parse(Int, match(r"Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)", y).match), x), rawData)
 
 # 将data中的数字转换坐标
 coordinates = map(x -> [x[1], x[2], abs(x[3] - x[1]) + abs(x[4] - x[2])], data)
