@@ -56,37 +56,34 @@ function biggestPreesure(timeleft::Int64, node::Int64, flowRatedata::Vector{Int6
             break
         end
         pressure += m
-
     end
     println("isopen: ", isopen)
     return pressure
 end
 
-biggestPreesure(30, 1, flowRatedata, g)
+# 找到AA节点的索引
+startindex = findall(x -> x == "AA", startFlowNameNodes)[1]
 
-dijkstra_shortest_paths(g, 4).dists
+biggestPreesure(30, startindex, flowRatedata, g)
 
-findall(!=(0), flowRatedata)
-
-notzeroindex = findall(!=(0), flowRatedata)
 
 # 节点直接的最短路径表
-shortestPathMap = reduce(hcat, [dijkstra_shortest_paths(g, i).dists for i in notzeroindex])
+# shortestPathMap = reduce(hcat, [dijkstra_shortest_paths(g, i).dists for i in notzeroindex])
 
 # 递归计算最大压力
 
 
-function maxPressure!(flowRatedata::Vector{Int}, node::Int64, timeleft::Int64, isopen::BitVector, indexs::Vector{Int64})
-    shortestPath = dijkstra_shortest_paths(g, node).dists
-    m = 0
-    newtimeleft = timeleft
-    for i in eachindex(shortestPath)
-        if shortestPath[i] + 1 <= timeleft && !isopen[i]
-            tleft = timeleft - shortestPath[i] - 1
-            pressure = tleft * flowRatedata[i]
-            m, node, newtimeleft = m < pressure / (shortestPath[i] + 1) ? (pressure, i, tleft) : (m, node, newtimeleft)
-        end
-    end
-    isopen[node] = true
-    return m, node, newtimeleft
-end
+# function maxPressure!(flowRatedata::Vector{Int}, node::Int64, timeleft::Int64, isopen::BitVector, indexs::Vector{Int64})
+#     shortestPath = dijkstra_shortest_paths(g, node).dists
+#     m = 0
+#     newtimeleft = timeleft
+#     for i in eachindex(shortestPath)
+#         if shortestPath[i] + 1 <= timeleft && !isopen[i]
+#             tleft = timeleft - shortestPath[i] - 1
+#             pressure = tleft * flowRatedata[i]
+#             m, node, newtimeleft = m < pressure / (shortestPath[i] + 1) ? (pressure, i, tleft) : (m, node, newtimeleft)
+#         end
+#     end
+#     isopen[node] = true
+#     return m, node, newtimeleft
+# end
