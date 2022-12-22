@@ -1,4 +1,4 @@
-data = readlines("data/day10.txt")
+data = readlines("data/2022/day10.txt")
 data = split.(data, ' ')
 # part one 
 cycles = 1

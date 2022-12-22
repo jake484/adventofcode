@@ -1,6 +1,6 @@
 using Dates
 # 读取数据
-function readData(path="data/day20.txt")
+function readData(path="data/2022/day20.txt")
     Dictdata = Dict{Int64,Int64}()
     listdata = String[]
     open(path) do f

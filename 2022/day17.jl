@@ -1,5 +1,5 @@
 # 读取数据
-rawData0 = readlines("data/day17.txt")[1] |> collect
+rawData0 = readlines("data/2022/day17.txt")[1] |> collect
 l = length(rawData0)
 rawData = repeat(rawData0, 1)
 rocksBottom = Dict{Int64,Vector{Tuple{Int64,Int64}}}(

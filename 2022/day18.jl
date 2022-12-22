@@ -1,5 +1,5 @@
 # 读取数据
-rawData = readlines("data/day18.txt")
+rawData = readlines("data/2022/day18.txt")
 # 将数据转换为二维数组
 data = map(line -> map(x -> parse(Int, x), split(line, ",")), rawData)
 

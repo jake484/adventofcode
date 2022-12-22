@@ -1,4 +1,4 @@
-data = readlines("data/day6.txt")[1]
+data = readlines("data/2022/day6.txt")[1]
 # part one 
 for i in 1:length(data)-13
     if (length(unique(data[i:i+13])) == 14)

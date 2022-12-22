@@ -10,7 +10,7 @@ function parse_line(line)
     exclusion_radius = l₁(sensor - beacon)
     (sensor, beacon, exclusion_radius)
 end
-parse_input(fpath="data/day15.txt") = readlines(fpath) .|> parse_line
+parse_input(fpath="data/2022/day15.txt") = readlines(fpath) .|> parse_line
 
 
 function add_exclusion_interval(intervals, sensor, radius, y)
@@ -35,7 +35,7 @@ end
 total_span(intset::IntervalSet) = intset.items .|> span |> sum
 solve_p1(sbr, line_y) = exclusion_intervals(sbr, line_y) |> total_span
 
-sbr = parse_input("data/day15.txt")
+sbr = parse_input("data/2022/day15.txt")
 exclusion_intervals(sbr, 2_000_000)
 solve_p1(sbr, 2_000_000) |> println
 
@@ -100,7 +100,7 @@ function parse_line_alt(line)
     Sensor(sensor, exclusion_radius)
 end
 
-function parse_alt(fpath="data/day15.txt")
+function parse_alt(fpath="data/2022/day15.txt")
     sensors = readlines(fpath) .|> parse_line_alt
     SVector{length(sensors)}(sensors)
 end

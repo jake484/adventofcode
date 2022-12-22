@@ -1,5 +1,5 @@
 # 读取数据
-function readData(path="data/day21.txt")
+function readData(path="data/2022/day21.txt")
     numData = Dict{String,Int64}()
     exData = Dict{String,Vector{String}}()
     for line in eachline(path)

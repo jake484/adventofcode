@@ -1,5 +1,5 @@
 # 读取数据
-rawData = readlines("data/day12.txt")
+rawData = readlines("data/2022/day12.txt")
 mountain = fill('0', length(rawData), length(rawData[1]))
 for i in eachindex(rawData)
     for j in eachindex(rawData[i])

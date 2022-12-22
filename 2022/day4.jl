@@ -1,4 +1,4 @@
-data = readlines("data/day4.txt")
+data = readlines("data/2022/day4.txt")
 data = split.(data, (c -> c == ',' || c == '-'))
 # part one 
 s = 0

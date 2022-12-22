@@ -1,5 +1,5 @@
 # 读取数据
-rawData = readlines("data/day16.txt")
+rawData = readlines("data/2022/day16.txt")
 
 # 用':'和','分割数据
 rawData = split.(rawData, (c -> c == ',' || c == ';' || c == '='))

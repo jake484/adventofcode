@@ -2,7 +2,7 @@ using JuMP
 import DataFrames
 import HiGHS
 
-function readData(path="data/day19.txt")
+function readData(path="data/2022/day19.txt")
     rawData = readlines(path)
     rawData = split.(rawData, c -> c == '.' || c == ':')
     regs = [

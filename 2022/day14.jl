@@ -1,5 +1,5 @@
 # 读取数据
-rawData = readlines("data/day14.txt")
+rawData = readlines("data/2022/day14.txt")
 Data = split.(rawData, "->")
 Data = map(x -> strip.(x), Data)
 

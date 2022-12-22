@@ -83,7 +83,7 @@ function put_piece!(canvas::CanvasState{N}, piece::Piece) where {N}
 end
 
 char2dir(c) = (c == '<') ? left : right
-parse_jets(fpath="data/day17.txt") = readchomp(fpath) |> collect .|> char2dir
+parse_jets(fpath="data/2022/day17.txt") = readchomp(fpath) |> collect .|> char2dir
 
 function plot_bot(canvas::CanvasState, n)
     for col ∈ eachcol(canvas.grid[:, n:-1:1])

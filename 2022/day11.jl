@@ -1,4 +1,4 @@
-rawData = readlines("data/day11.txt")
+rawData = readlines("data/2022/day11.txt")
 rawData = strip.(rawData)
 filter!(x -> !isempty(x), rawData)
 data = split.(rawData, ':')

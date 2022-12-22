@@ -1,5 +1,5 @@
 # 读取数据
-rawData = readlines("data/day13.txt")
+rawData = readlines("data/2022/day13.txt")
 filter!(x -> x != "", rawData)
 data = @. eval(Meta.parse(rawData))
 

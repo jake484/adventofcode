@@ -1,5 +1,5 @@
 # 读取数据
-data = readlines("data/day7.txt")
+data = readlines("data/2022/day7.txt")
 data = split.(data, ' ')
 
 # 定义目录结构

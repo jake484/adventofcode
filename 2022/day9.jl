@@ -1,4 +1,4 @@
-data = readlines("data/day9.txt")
+data = readlines("data/2022/day9.txt")
 data = split.(data, ' ')
 isVisted = falses(1000, 1000)
 function updateTailPos(HxNew::Int, HyNew::Int, Tx::Int, Ty::Int)

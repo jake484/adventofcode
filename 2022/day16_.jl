@@ -17,7 +17,7 @@ function pline(line)
     other_valves = split(split(line, "to valv")[2], ", ") .|> vname
     valve_name => Valve(flow_rate, Tuple(vname.(other_valves)))
 end
-function parse_input(fpath="data/day16.txt")
+function parse_input(fpath="data/2022/day16.txt")
     d = Dict{VCode,Valve}()
     for line ∈ eachline(fpath)
         push!(d, pline(line))
@@ -136,7 +136,7 @@ function solve_p2(valves, n_periods, n_agents)
     solution_summary(model), model
 end
 
-valves_example = parse_input("data/day16.txt")
+valves_example = parse_input("data/2022/day16.txt")
 valves = parse_input()
 solve_p2(valves, 30, 1)
 solve_p2(valves, 26, 2)

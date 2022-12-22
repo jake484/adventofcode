@@ -1,4 +1,4 @@
-movedata = readlines("data/day5.txt")
+movedata = readlines("data/2022/day5.txt")
 movedata = map(x -> parse.(Int, split(x, ' ')[2:2:6]), movedata)
 
 data = collect.([

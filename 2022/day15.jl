@@ -1,5 +1,5 @@
 # 读取数据
-rawData = readlines("data/day15.txt")
+rawData = readlines("data/2022/day15.txt")
 
 # 用正则表达式提取数字字符串数组中的数字
 data = map(x -> map(y -> parse(Int, match(r"Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)", y).match), x), rawData)

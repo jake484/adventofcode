@@ -1,4 +1,4 @@
-data = readlines("data/day3.txt")
+data = readlines("data/2022/day3.txt")
 
 # part one 
 s = 0

@@ -1,6 +1,6 @@
 using Pipe
 
-parse_input(fpath="data/day20.txt") = @pipe readlines(fpath) .|> parse(Int16, _)
+parse_input(fpath="data/2022/day20.txt") = @pipe readlines(fpath) .|> parse(Int16, _)
 example_input = Int16[1, 2, -3, 3, -2, 0, 4]
 
 mutable struct WrappyVector{N,T}
