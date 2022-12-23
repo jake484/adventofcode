@@ -139,3 +139,11 @@ pos, direction = move(gameMap, startPos, pathDescription, Val(2))
 # println("Pos: $(pos), Direction: $(direction)")
 println("Part Two Password: $(getPassWord(pos, direction))")
 
+using BenchmarkTools
+function benchmark()
+    gameMap, pathDescription = readData()
+    startPos = CartesianIndex(1, findfirst(gameMap[1, :] .== 1))
+    move(gameMap, startPos, pathDescription, Val(1))
+    move(gameMap, startPos, pathDescription, Val(2))
+end
+@btime benchmark()

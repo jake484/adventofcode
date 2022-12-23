@@ -133,5 +133,11 @@ function solve_P2(offset=10, round=2000)
     return -1
 end
 
-println("Part One Answer: ", solve_P1(10))
-println("Part Two Answer: ", solve_P2(20, 2000))
+# println("Part One Answer: ", solve_P1(10))
+# println("Part Two Answer: ", solve_P2(20, 2000))
+using BenchmarkTools
+function day23_benchmark()
+    solve_P1(10)
+    solve_P2(20, 2000)
+end
+@btime day23_benchmark()
