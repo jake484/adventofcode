@@ -21,3 +21,10 @@ end
 data = readData()
 println("Part 1: ", count(data))
 println("Part 2: ", count(data, 3))
+
+using BenchmarkTools
+@btime begin
+    data = readData()
+    count(data)
+    count(data, 3)
+end

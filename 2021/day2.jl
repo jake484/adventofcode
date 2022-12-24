@@ -35,6 +35,7 @@ function move2!(pos::Vector{Int64}, data)
         end
     end
 end
+
 data = readData()
 pos = [0, 0]
 move!(pos, data)
@@ -42,4 +43,13 @@ println("Part 1: ", pos |> prod)
 pos = [0, 0, 0]
 move2!(pos, data)
 println("Part 2: ", pos[1:2] |> prod)
+
+using BenchmarkTools
+@btime begin
+    data = readData()
+    pos = [0, 0]
+    move!(pos, data)
+    pos = [0, 0, 0]
+    move2!(pos, data)
+end
 
