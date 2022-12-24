@@ -21,6 +21,7 @@ Platform Info:
 | 21 | :white_check_mark: |  :white_check_mark: | 4.580 s | 2.39 GiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day21.jl) |
 | 22 | :white_check_mark: |  :white_check_mark: | 2.324 ms | 430.01 KiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day22.jl) |
 | 23 | :white_check_mark: |  :white_check_mark: | 369.5 ms | 555.78 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day23.jl) |
+| 24 | :white_check_mark: |  :white_check_mark: | 11.956 s | 1.2 GiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day24.jl) |
 
 ## 2021
 
