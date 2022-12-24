@@ -67,23 +67,35 @@ function solve_1(costs, periods)
     return objective_value(model) |> Int
 end
 
-d = readData()
-
-println("=====Part 1=======")
-s = 0
-for (i, c) in d
-    println("  第$(i)个结果:\t", solve_1(c, 1:24))
-    global s += solve_1(c, 1:24) * i
-end
-println("  s = $s")
-
-println("=====Part 2=======")
-begin
-    s = 1
-    for i in 1:3
-        res = solve_1(d[i], 1:32)
-        println("  第$(i)个结果:\t", res)
-        global s *= res
+function solve_P1()
+    d = readData()
+    println("=====Part 1=======")
+    s = 0
+    for (i, c) in d
+        println("  第$(i)个结果:\t", solve_1(c, 1:24))
+        s += solve_1(c, 1:24) * i
     end
+    println("  s = $s")
 end
-println("  s = $s")
+
+function solve_P2()
+    d = readData()
+    println("=====Part 2=======")
+    begin
+        s = 1
+        for i in 1:3
+            res = solve_1(d[i], 1:32)
+            println("  第$(i)个结果:\t", res)
+            s *= res
+        end
+    end
+    println("  s = $s")
+end
+
+
+using BenchmarkTools
+function benchmark()
+    solve_P1()
+    solve_P2()
+end
+@btime benchmark()

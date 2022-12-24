@@ -80,4 +80,3 @@ moveData!(listdata, moved)
 zeroindex = findfirst(x -> x[1] == '0', listdata)
 l = length(listdata)
 sum(x -> parse(Int64, split(x, ",")[1]), listdata[mod1(zeroindex + i, l)] for i in [1000, 2000, 3000])
-

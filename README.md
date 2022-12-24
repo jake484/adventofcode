@@ -1,6 +1,6 @@
 # Advent of Code
 
-Julia Solutions for Advent of Code.
+Julia Solutions for [Advent of Code](https://adventofcode.com/2022/day/22).
 
 ```powershell
 Platform Info:
@@ -14,7 +14,11 @@ Platform Info:
 
 ## 2022
 
-| Day | Problem | Time | Allocated memory | Source |
-|----:|:-------:|-----:|-----------------:|:------:|
-| 22 | [:white_check_mark:](https://adventofcode.com/2022/day/22) | 2.324 ms | 430.01 KiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day22.jl) |
-| 23 | [:white_check_mark:](https://adventofcode.com/2022/day/22) | 369.5 ms | 555.78 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day23.jl) |
+| Day | Part One |Part Two | Time | Allocated memory | Source |
+|----:|:-------: |:-------:|-----:|-----------------:|:------:|
+
+| 18 | [:white_check_mark:] |  [:white_check_mark:] | 184.9 μs | 31.55 KiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day18.jl) |
+| 19 | [:white_check_mark:] |  [:white_check_mark:] | 11.44 s | 155.30 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day19.jl) |
+| 21 | [:white_check_mark:] |  [:white_check_mark:] | 4.580 s | 2.39 GiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day21.jl) |
+| 22 | [:white_check_mark:] |  [:white_check_mark:] | 2.324 ms | 430.01 KiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day22.jl) |
+| 23 | [:white_check_mark:] |  [:white_check_mark:] | 369.5 ms | 555.78 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day23.jl) |

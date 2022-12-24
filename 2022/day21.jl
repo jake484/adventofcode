@@ -32,17 +32,13 @@ function monkeyYell!(numData::Dict{String,Int64}, exData::Dict{String,Vector{Str
     return true
 end
 
-
-monkeyYell!(numData, exData)
-println("Part one answer: ", numData["root"])
-
 # Part two
 function humnYell(numData::Dict{String,Int64}, exData::Dict{String,Vector{String}})
     r1, _, r2 = exData["root"]
     ind = Int64[]
     r1s = Int64[]
     r2s = Int64[]
-    for i in 1:10000
+    for i in 1:5000
         mynumData = deepcopy(numData)
         myexData = deepcopy(exData)
         mynumData["humn"] = i
@@ -61,13 +57,22 @@ function humnYell(numData::Dict{String,Int64}, exData::Dict{String,Vector{String
     end
     return r1s, r2s, ind
 end
-numData, exData = readData()
-r1s, r2s, ind = humnYell(numData, exData)
 
-ks = [(r1s[i] - r1s[1]) // (ind[i] - ind[1]) for i in 2:lastindex(ind)]
+# monkeyYell!(numData, exData)
+# println("Part one answer: ", numData["root"])
+# numData, exData = readData()
+# r1s, r2s, ind = humnYell(numData, exData)
+# ks = [(r1s[i] - r1s[1]) // (ind[i] - ind[1]) for i in 2:lastindex(ind)]
+# if allequal(ks)
+#     p2 = (r2s[1] - r1s[1]) // ks[1] + ind[1]
+#     println("Part two answer: ", Int(p2))
+# end
 
-if allequal(ks)
-    p2 = (r2s[1] - r1s[1]) // ks[1] + ind[1]
-    println("Part two answer: ", Int(p2))
+using BenchmarkTools
+function benchmark()
+    numData, exData = readData()
+    humnYell(numData, exData)
+    monkeyYell!(numData, exData)
 end
+@btime benchmark()
 

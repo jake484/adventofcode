@@ -18,8 +18,6 @@ function draw!(map::BitArray{3}, data::Vector{Vector{Int}}, offset::Int=0)
     end
 end
 
-# 绘制三维坐标轴
-draw!(map3D, data, offset)
 
 # 统计正方体的外表面积
 function countSurfaceArea(map::BitArray{3}, cubes::Vector{Vector{Int}}, r::Int, offset::Int=0)
@@ -48,12 +46,9 @@ function countSurfaceArea(map::BitArray{3}, cubes::Vector{Vector{Int}}, r::Int, 
     return count
 end
 
-# 统计正方体的外表面积
-sa = countSurfaceArea(map3D, data, r, offset)
-println("SurfaceArea:", sa)
 
 # 查找零坐标的邻居坐标
-function neighbours(map::BitArray{3}, current::CartesianIndex{3})
+function neighbours(current::CartesianIndex{3}, map::BitArray{3})
     i, j, k = current.I[1], current.I[2], current.I[3]
     neighb = CartesianIndex{3}[]
     if i > 1 && !map[i-1, j, k]
@@ -77,7 +72,6 @@ function neighbours(map::BitArray{3}, current::CartesianIndex{3})
     return neighb
 end
 
-
 # 递归进行广度优先搜索外部零坐标
 function cubeSearch(map::BitArray{3}, currents::Vector{CartesianIndex{3}}, neighb::Vector{Vector{CartesianIndex{3}}})
     newCurrent = CartesianIndex{3}[]
@@ -98,12 +92,6 @@ function cubeSearch(map::BitArray{3}, currents::Vector{CartesianIndex{3}}, neigh
         cubeSearch(map, newCurrent, newNeighb)
     end
 end
-
-# 查找外部零坐标
-cubeSearch(map3D, [CartesianIndex(1, 1, 1)], [neighbours(CartesianIndex(1, 1, 1), map3D)])
-
-# 找到所有的零坐标
-zeroCubes = findall(x -> !x, map3D)
 
 # 统计正方体内的空心坐标的外表面积
 function countInnerSurfaceArea(map::BitArray{3}, cubes::Vector{CartesianIndex{3}}, r::Int)
@@ -132,4 +120,16 @@ function countInnerSurfaceArea(map::BitArray{3}, cubes::Vector{CartesianIndex{3}
     return count
 end
 
-sa - countInnerSurfaceArea(map3D, zeroCubes, r) |> println
+using BenchmarkTools
+@btime begin
+    # 绘制三维坐标轴
+    draw!(map3D, data, offset)
+    # 统计正方体的外表面积
+    sa = countSurfaceArea(map3D, data, r, offset)
+    println("SurfaceArea:", sa)
+    # 查找外部零坐标
+    cubeSearch(map3D, [CartesianIndex(1, 1, 1)], [neighbours(CartesianIndex(1, 1, 1), map3D)])
+    # 找到所有的零坐标
+    zeroCubes = findall(x -> !x, map3D)
+    sa - countInnerSurfaceArea(map3D, zeroCubes, r) |> println
+end
