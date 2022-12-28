@@ -16,6 +16,7 @@ Platform Info:
 
 | Day | Part One |Part Two | Time | Allocated memory | Source |
 |----:|:-------: |:-------:|-----:|-----------------:|:------:|
+| 17 | :white_check_mark: |  :white_check_mark: | 8.319 s | 4.23 GiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day17_.jl) |
 | 18 | :white_check_mark: |  :white_check_mark: | 184.9 μs | 31.55 KiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day18.jl) |
 | 19 | :white_check_mark: |  :white_check_mark: | 11.44 s | 155.30 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day19.jl) |
 | 20 | :white_check_mark: |  :white_check_mark: | 217.4 ms | 793.55 KiB | [link](https://github.com/jake484/adventofcode/blob/master/2022/day20.jl) |

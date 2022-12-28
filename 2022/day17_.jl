@@ -104,7 +104,6 @@ function solve_p1(jets)
     canvas.highest_position
 end
 
-parse_jets() |> solve_p1 |> println
 
 # ------------ Part 2 ---------------
 
@@ -176,4 +175,8 @@ end
 
 solve_p2(jets) = solve_p2(jets, Val(1))
 
-parse_jets() |> solve_p2 |> println
+using BenchmarkTools
+@btime begin
+    parse_jets() |> solve_p1 
+    parse_jets() |> solve_p2
+end
