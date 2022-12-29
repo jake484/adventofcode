@@ -35,29 +35,6 @@ end
 total_span(intset::IntervalSet) = intset.items .|> span |> sum
 solve_p1(sbr, line_y) = exclusion_intervals(sbr, line_y) |> total_span
 
-sbr = parse_input("data/2022/day15.txt")
-exclusion_intervals(sbr, 2_000_000)
-solve_p1(sbr, 2_000_000) |> println
-
-# this is slow, see below
-function _solve_p2(sbr, max_coord=4_000_000)
-    grid_interval = IntervalSet(1 .. max_coord)
-    for i ∈ 1:max_coord
-        excl = exclusion_intervals(sbr, i) ∩ grid_interval
-        if total_span(excl) < max_coord - 1
-            println(total_span(excl))
-            return (i, setdiff(grid_interval, excl))
-        end
-    end
-end
-
-function solve_p2(inputs)
-    y, intset = _solve_p2(inputs)
-    y + 4_000_000(intset.items[1].first + 1)
-end
-
-solve_p2(sbr) |> println
-
 # ------------------------------
 # And now, the cheesiest solution of the year so far
 clamp_to_square(x) = clamp(x, -1, 1)
@@ -143,9 +120,13 @@ function solve_p2(sensors, grid_wh=4_000_000)
     end
     (length(candidate_pairs) == 2) || error("Code the pairwise intersections u lazy bum")
     canyons = sensors_to_canyon.(candidate_pairs)
-    println(canyons)
     p = canyons[1] ∩ canyons[2]
     p[1] + grid_wh * p[2]
-end  
+end
 
-parse_alt() |> solve_p2 |> println
+using BenchmarkTools
+@btime begin
+    sbr = parse_input("data/2022/day15.txt")
+    solve_p1(sbr, 2_000_000)
+    parse_alt() |> solve_p2
+end
