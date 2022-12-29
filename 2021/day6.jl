@@ -31,10 +31,9 @@ function createFish(initFishes::Vector{Int}, day::Int)
     end
 end
 
-data = readData()
-
 using BenchmarkTools
 @btime begin
+    data = readData()
     createFish(data, 80)
     createFish(data, 256)
 end
