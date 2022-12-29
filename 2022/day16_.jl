@@ -17,6 +17,7 @@ function pline(line)
     other_valves = split(split(line, "to valv")[2], ", ") .|> vname
     valve_name => Valve(flow_rate, Tuple(vname.(other_valves)))
 end
+
 function parse_input(fpath="data/2022/day16.txt")
     d = Dict{VCode,Valve}()
     for line ∈ eachline(fpath)
@@ -35,6 +36,7 @@ import HiGHS
 
 function solve_p1(valves)
     model = Model(HiGHS.Optimizer)
+    set_silent(model)
     vcodes = keys(valves)
     periods = 1:30
     # O[vcode, p] = opening valve vcode in period p
@@ -89,12 +91,12 @@ function solve_p1(valves)
     solution_summary(model), model
 end
 
-vv = parse_input()
-solve_p1(vv)
+
 # Reading the solution from the solver output at this stage
 
 function solve_p2(valves, n_periods, n_agents)
     model = Model(HiGHS.Optimizer)
+    set_silent(model)
     vcodes = keys(valves)
     periods = 1:n_periods
     agents = 1:n_agents
@@ -136,7 +138,10 @@ function solve_p2(valves, n_periods, n_agents)
     solution_summary(model), model
 end
 
-valves_example = parse_input("data/2022/day16.txt")
-valves = parse_input()
-solve_p2(valves, 30, 1)
-solve_p2(valves, 26, 2)
+using BenchmarkTools
+@btime begin
+    valves = parse_input()
+    solve_p2(valves, 30, 1)
+    solve_p2(valves, 26, 2)
+end
+
