@@ -1,7 +1,3 @@
-# 读取数据
-rawData = readlines("data/2022/day13.txt")
-filter!(x -> x != "", rawData)
-data = @. eval(Meta.parse(rawData))
 
 # 重载compare函数，使其可以比较嵌套数组
 compare(a::Int64, b::Int64) = a < b
@@ -66,17 +62,24 @@ function isequal(a::Vector, b::Vector)
     return false
 end
 
-# part one
-s = 0
-for i in 2:2:lastindex(data)
-    if compare(data[i-1], data[i])
-        global s += i >> 1
+using BenchmarkTools
+@btime begin
+    rawData = readlines("data/2022/day13.txt")
+    filter!(x -> x != "", rawData)
+    data = @. eval(Meta.parse(rawData))
+    # part one
+    s = 0
+    for i in 2:2:lastindex(data)
+        if compare(data[i-1], data[i])
+            s += i >> 1
+        end
     end
+    # part two
+    newdata = deepcopy(data)
+    push!(newdata, [[2]], [[6]])
+    sort!(newdata, lt=compare)
+    prod(findall(x -> x == [[2]] || x == [[6]], newdata))
 end
-println("Part one answer: ", s)
 
-# part two
-newdata = deepcopy(data)
-push!(newdata, [[2]], [[6]])
-sort!(newdata, lt=compare)
-println("Part two answer: ", prod(findall(x -> x == [[2]] || x == [[6]], newdata)))
+# println("Part one answer: ", s)
+# println("Part two answer: ", prod(findall(x -> x == [[2]] || x == [[6]], newdata)))
