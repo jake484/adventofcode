@@ -25,23 +25,6 @@ function isequal(a::Int64, b::Vector)
     return isequal([a], b)
 end
 
-# 展平嵌套数组
-# function flatten(arr::Vector)
-#     res = Int64[]
-#     for i in arr
-#         if isa(i, Vector)
-#             append!(res, flatten(i))
-#         else
-#             push!(res, i)
-#         end
-#     end
-#     if all(map(==(-1), res)) || isempty(res)
-#         push!(res, -1)
-#     end
-#     return res
-# end
-
-
 # 递归比较两个嵌套数组
 function compare(a::Vector, b::Vector)
     isempty(a) && !isempty(b) && return true

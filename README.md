@@ -1,6 +1,6 @@
 # Advent of Code
 
-Julia Solutions for [Advent of Code](https://adventofcode.com/2022/day/22).
+Julia Solutions for [Advent of Code](https://adventofcode.com/2022/).
 
 ```powershell
 Platform Info:
