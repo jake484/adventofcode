@@ -15,7 +15,6 @@ end
 const TOEAST = CartesianIndex(0, 1)
 const TOSOUTH = CartesianIndex(1, 0)
 
-
 function inbounds(A::BitMatrix, I::CartesianIndex, ::Val{:east})
     toMoveIndex = I + TOEAST
     return checkbounds(Bool, A, toMoveIndex) ? toMoveIndex : CartesianIndex(I.I[1], 1)
