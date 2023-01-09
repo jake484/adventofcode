@@ -1,21 +1,29 @@
-data = readlines("data/2022/day4.txt")
-data = split.(data, (c -> c == ',' || c == '-'))
-# part one 
-s = 0
-for i in data
-    i = parse.(Int, i)
-    d = i[1]:i[2] ⊆ i[3]:i[4] || i[1]:i[2] ⊇ i[3]:i[4] ? 1 : 0
-    global s += d
+function readData(path="data/2022/day4.txt")
+    data = split.(readlines(path), (c -> c == ',' || c == '-'))
+    return map(i -> parse.(Int, i), data)
 end
-s
+
+# part one
+function part1(data)
+    s = 0
+    for i in data
+        (i[1]:i[2] ⊆ i[3]:i[4] || i[1]:i[2] ⊇ i[3]:i[4]) && (s += 1)
+    end
+    return s
+end
 
 
 # part two
-s = 0
-for i in data
-    i = parse.(Int, i)
-    inter = intersect(collect(i[1]:i[2]), collect(i[3]:i[4]))
-    d = isempty(inter) ? 0 : 1
-    global s += d
+function part2(data)
+    s = 0
+    for i in data
+        isempty(intersect(i[1]:i[2], i[3]:i[4])) || (s += 1)
+    end
+    return s
 end
-s
+
+using BenchmarkTools
+@btime begin
+    data = readData()
+    part1(data), part2(data)
+end

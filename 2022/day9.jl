@@ -1,6 +1,5 @@
-data = readlines("data/2022/day9.txt")
-data = split.(data, ' ')
-isVisted = falses(1000, 1000)
+readData(path="data/2022/day9.txt") = split.(readlines(path), ' ')
+
 function updateTailPos(HxNew::Int, HyNew::Int, Tx::Int, Ty::Int)
     if abs(HxNew - Tx) <= 1 && abs(HyNew - Ty) <= 1
         return Tx, Ty
@@ -49,35 +48,41 @@ function moveOneStep(direction::AbstractString, Hx::Int, Hy::Int, Tx::Int, Ty::I
 end
 
 # part one 
-Hx, Hy, Tx, Ty = [500, 500, 500, 500]
-isVisted[Tx, Ty] = true
-
-for move in data
-    for i in 1:parse(Int, move[2])
-        global Hx, Hy, Tx, Ty = moveOneStep(move[1], Hx, Hy, Tx, Ty)
-        isVisted[Tx, Ty] = true
+function part1(data)
+    l = 800
+    isVisted = zeros(Int8, l, l)
+    Hx, Hy, Tx, Ty = (l ÷ 2) * ones(Int8, 4)
+    isVisted[Tx, Ty] = 1
+    for move in data
+        for _ in Base.OneTo(parse(Int, move[2]))
+            Hx, Hy, Tx, Ty = moveOneStep(move[1], Hx, Hy, Tx, Ty)
+            isVisted[Tx, Ty] = 1
+        end
     end
+    sum(isVisted)
 end
-
-count(isVisted)
-
 
 # part two
-isVisted = falses(1000, 1000)
-Hx, Hy = 500 * ones(Int, 2)
-Tx, Ty = 500 * ones(Int, 9), 500 * ones(Int, 9)
-isVisted[Hx, Hy] = true
-for move in data
-    for i in 1:parse(Int, move[2])
-        global Hx, Hy, Tx[1], Ty[1] = moveOneStep(move[1], Hx, Hy, Tx[1], Ty[1])
-        for k in 1:8
-            global Tx[k+1], Ty[k+1] = updateTailPos(Tx[k], Ty[k], Tx[k+1], Ty[k+1])
+function part2(data)
+    l = 800
+    isVisted = zeros(Int8, l, l)
+    Hx, Hy = 500 * ones(Int, 2)
+    Tx, Ty = 500 * ones(Int, 9), 500 * ones(Int, 9)
+    isVisted[Hx, Hy] = 1
+    for move in data
+        for _ in Base.OneTo(parse(Int, move[2]))
+            Hx, Hy, Tx[1], Ty[1] = moveOneStep(move[1], Hx, Hy, Tx[1], Ty[1])
+            for k in 1:8
+                Tx[k+1], Ty[k+1] = updateTailPos(Tx[k], Ty[k], Tx[k+1], Ty[k+1])
+            end
+            isVisted[Tx[9], Ty[9]] = 1
         end
-        global isVisted[Tx[9], Ty[9]] = true
     end
+    sum(isVisted)
 end
-count(isVisted)
 
-# res = findall(isVisted)
-
-# map(x -> (x - CartesianIndex(500, 500)), res)
+using BenchmarkTools
+@btime begin
+    data = readData()
+    part1(data), part2(data)
+end

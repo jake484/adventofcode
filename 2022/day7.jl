@@ -1,8 +1,3 @@
-# 读取数据
-data = readlines("data/2022/day7.txt")
-data = split.(data, ' ')
-
-# 定义目录结构
 Base.@kwdef mutable struct directory
     name::String = ""
     size::Int64 = 0
@@ -10,13 +5,7 @@ Base.@kwdef mutable struct directory
     fileSizes::Vector{Int64} = Int64[]
 end
 
-# part one 
-
-# 初始索引
-ind = firstindex(data)
-
-# 递归生成目录结构
-function generateDirectory(ind::Int64, l::Int64)
+function generateDirectory(data, ind::Int64=firstindex(data), l::Int64=lastindex(data))
     dir = directory(name=data[ind][3])
     ind += 2
     dirNames = String[]
@@ -32,31 +21,29 @@ function generateDirectory(ind::Int64, l::Int64)
         ind += 1
     end
     for i in dirNames
-        subdir, ind = generateDirectory(ind, l)
+        subdir, ind = generateDirectory(data, ind, l)
         push!(dir.subdirs, subdir)
     end
     return dir, ind
 end
-res, ind = generateDirectory(1, lastindex(data));
 
-# 储存每个目录的大小
-sizes = Int64[]
+readData(path="data/2022/day7.txt") = split.(readlines(path), ' ') |> generateDirectory
 
-# 递归计算目录大小
-function calucDirectorySize(dir::directory)
+function calucDirectorySize!(sizes::Vector{Int}, dir::directory)
     dir.size = sum(dir.fileSizes)
     for i in dir.subdirs
-        dir.size += calucDirectorySize(i)
+        dir.size += calucDirectorySize!(sizes, i)
     end
     push!(sizes, dir.size)
     return dir.size
 end
 
-totalszie = calucDirectorySize(res)
+function solve(dir)
+    sizes = Int64[]
+    totalszie = calucDirectorySize!(sizes, dir)
+    toDel = totalszie - 40000000
+    return sum(x -> x <= 100000 ? x : 0, sizes), findmin(x -> x > toDel ? x : Inf64, sizes)
+end
 
-# 不超过100MB的目录
-sum(x -> x <= 100000 ? x : 0, sizes)
-
-# part two
-toDel = totalszie - 40000000
-findmin(x -> x > toDel ? x : Inf64, sizes)
+using BenchmarkTools
+@btime solve(readData()[1])
