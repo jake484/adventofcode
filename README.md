@@ -66,6 +66,7 @@ Platform Info:
 |   18 | :white_check_mark: | :white_check_mark: |    6.29 s |       338.09 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2021/day18.jl)  |
 |   20 | :white_check_mark: | :white_check_mark: | 29.257 ms |        27.09 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2021/day20.jl)  |
 |   21 | :white_check_mark: | :white_check_mark: |   6.57 ms |         2.84 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2021/day21.jl)  |
+|   22 | :white_check_mark: | :white_check_mark: | 23.455 ms |         5.44 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2021/day22.jl)  |
 |   24 | :white_check_mark: | :white_check_mark: |  62.57 ms |         3.14 KiB | [link](https://github.com/jake484/adventofcode/blob/master/2021/day24.jl)  |
 | 25_1 | :white_check_mark: | :white_check_mark: | 120.57 ms |         4.99 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2021/day25.jl)  |
 | 25_2 | :white_check_mark: | :white_check_mark: |  50.52 ms |        73.28 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2021/day25_.jl) |
