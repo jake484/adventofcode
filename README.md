@@ -5,11 +5,11 @@ Julia Solutions for [Advent of Code](https://adventofcode.com/2022/).
 ```powershell
 Platform Info:
   OS: Windows (x86_64-w64-mingw32)
-  CPU: 8 × Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz
+  CPU: 20 × 13th Gen Intel(R) Core(TM) i7-13700H
   WORD_SIZE: 64
   LIBM: libopenlibm
-  LLVM: libLLVM-13.0.1 (ORCJIT, skylake)
-  Threads: 1 on 8 virtual cores
+  LLVM: libLLVM-14.0.6 (ORCJIT, goldmont)
+  Threads: 1 on 20 virtual cores
 ```
 
 ## 2023
