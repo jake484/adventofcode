@@ -1,4 +1,4 @@
-function main(index::Int, year::Int=2020)
+function main(index::Int, year::Int=2023)
     str = """
     function readData(path, ::Val{$index})
         
@@ -28,4 +28,4 @@ function main(index::Int, year::Int=2020)
     end
 end
 
-main(18)
+main(1)

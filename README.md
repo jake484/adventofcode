@@ -12,6 +12,13 @@ Platform Info:
   Threads: 1 on 8 virtual cores
 ```
 
+## 2023
+
+|  Day |      Part One      |      Part Two      |      Time | Allocated memory |                                   Source                                   |
+| ---: | :----------------: | :----------------: | --------: | ---------------: | :------------------------------------------------------------------------: |
+|    day1 | :white_check_mark: | :white_check_mark: |  1.264 ms |      4.34 MiB |  [link](https://github.com/jake484/adventofcode/blob/master/2023/day1.jl)  |
+
+
 ## 2022
 
 |  Day |      Part One      |      Part Two      |       Time | Allocated memory |                                   Source                                   |

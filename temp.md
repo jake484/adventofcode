@@ -71,14 +71,8 @@ Platform Info:
 | 25_1 | :white_check_mark: | :white_check_mark: | 120.57 ms |         4.99 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2021/day25.jl)  |
 | 25_2 | :white_check_mark: | :white_check_mark: |  50.52 ms |        73.28 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2021/day25_.jl) |
 
-## 2020
+## 2023
 
 |  Day |      Part One      |      Part Two      |      Time | Allocated memory |                                   Source                                   |
 | ---: | :----------------: | :----------------: | --------: | ---------------: | :------------------------------------------------------------------------: |
-|    day1 | :white_check_mark: | :white_check_mark: |  167.300 μs |      392.01 KiB |  [link](https://github.com/jake484/adventofcode/blob/master/2020/day1.jl)  |
-|    day18 | :white_check_mark: | :white_check_mark: |  3.350 ms |      24.16 MiB |  [link](https://github.com/jake484/adventofcode/blob/master/2020/day18.jl)  |
-|    day2 | :white_check_mark: | :white_check_mark: |  515.500 μs |      405.87 KiB |  [link](https://github.com/jake484/adventofcode/blob/master/2020/day2.jl)  |
-|    day3 | :white_check_mark: | :white_check_mark: |  77.500 μs |      31.57 KiB |  [link](https://github.com/jake484/adventofcode/blob/master/2020/day3.jl)  |
-|    day4 | :white_check_mark: | :white_check_mark: |  1.756 ms |      1.33 MiB |  [link](https://github.com/jake484/adventofcode/blob/master/2020/day4.jl)  |
-|    day5 | :white_check_mark: | :white_check_mark: |  1.063 ms |      948.79 KiB |  [link](https://github.com/jake484/adventofcode/blob/master/2020/day5.jl)  |
-|    day6 | :white_check_mark: | :white_check_mark: |  1.654 ms |      1.61 MiB |  [link](https://github.com/jake484/adventofcode/blob/master/2020/day6.jl)  |
+|    day1 | :white_check_mark: | :white_check_mark: |  1.264 ms |      4.34 MiB |  [link](https://github.com/jake484/adventofcode/blob/master/2023/day1.jl)  |

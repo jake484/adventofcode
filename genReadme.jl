@@ -1,6 +1,6 @@
 using BenchmarkTools
 
-year = 2020
+year = 2023
 
 str = read("README.md", String)
 
