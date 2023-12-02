@@ -4,19 +4,26 @@ function main(index::Int, year::Int=2023)
         
     end
     
+    function partOne(data)
+        return 0
+    end
+    
+    function partTwo(data)
+        return 0
+    end
+    
     function day$(index)_main()
         data = readData("data/$year/day$index.txt", Val($index))
-
-        return nothing
+        return partOne(data), partTwo(data)
     end
 
     # test
     data = readData("data/$year/day$index.txt", Val($index))
+    day$(index)_main()
 
-
-    using BenchmarkTools
-    @info "day$index 性能："
-    @btime day$(index)_main()
+    # using BenchmarkTools
+    # @info "day$index 性能："
+    # @btime day$(index)_main()
 
     """
     open("data/$year/day$index.txt", "w") do io
@@ -28,4 +35,4 @@ function main(index::Int, year::Int=2023)
     end
 end
 
-main(1)
+main(2)
