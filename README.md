@@ -14,14 +14,14 @@ Platform Info:
 
 ## 2023
 
-|  Day |      Part One      |      Part Two      |      Time | Allocated memory |                                   Source                                   |
-| ---: | :----------------: | :----------------: | --------: | ---------------: | :------------------------------------------------------------------------: |
-|    day1 | :white_check_mark: | :white_check_mark: |  1.264 ms |      4.34 MiB |  [link](https://github.com/jake484/adventofcode/blob/master/2023/day1.jl)  |
-|    day2 | :white_check_mark: | :white_check_mark: |  1.119 ms |      992.48 KiB |  [link](https://github.com/jake484/adventofcode/blob/master/2023/day2.jl)  |
-|    day3 | :white_check_mark: | :white_check_mark: |  451.100 μs |      889.66 KiB |  [link](https://github.com/jake484/adventofcode/blob/master/2023/day3.jl)  |
-|    day4 | :white_check_mark: | :white_check_mark: |  1.177 ms |      1.74 MiB |  [link](https://github.com/jake484/adventofcode/blob/master/2023/day4.jl)  |
-|    day5 | :white_check_mark: | :white_check_mark: |  206.840 ms |      91.18 MiB |  [link](https://github.com/jake484/adventofcode/blob/master/2023/day5.jl)  |
-
+|  Day |      Part One      |      Part Two      |       Time | Allocated memory |                                  Source                                  |
+| ---: | :----------------: | :----------------: | ---------: | ---------------: | :----------------------------------------------------------------------: |
+| day1 | :white_check_mark: | :white_check_mark: |   1.264 ms |         4.34 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2023/day1.jl) |
+| day2 | :white_check_mark: | :white_check_mark: |   1.119 ms |       992.48 KiB | [link](https://github.com/jake484/adventofcode/blob/master/2023/day2.jl) |
+| day3 | :white_check_mark: | :white_check_mark: | 451.100 μs |       889.66 KiB | [link](https://github.com/jake484/adventofcode/blob/master/2023/day3.jl) |
+| day4 | :white_check_mark: | :white_check_mark: |   1.177 ms |         1.74 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2023/day4.jl) |
+| day5 | :white_check_mark: | :white_check_mark: | 206.840 ms |        91.18 MiB | [link](https://github.com/jake484/adventofcode/blob/master/2023/day5.jl) |
+| day6 | :white_check_mark: | :white_check_mark: | 172.969 ns |        240 bytes | [link](https://github.com/jake484/adventofcode/blob/master/2023/day6.jl) |
 
 ## 2022
 
