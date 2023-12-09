@@ -1,7 +1,7 @@
 using BenchmarkTools
 
 year = 2023
-file = "day8.jl"
+file = "day9.jl"
 
 eval(:(include(joinpath("$year", $file))))
 name = split(file, ".")[1]
