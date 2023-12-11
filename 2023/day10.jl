@@ -62,39 +62,43 @@ function findNext(data, index, indices)
     canE = ('-', 'J', '7')
     canW = ('-', 'L', 'F')
     canS = ('|', 'J', 'L')
+    ps = Vector{CartesianIndex{2}}[]
     if N in indices && data[N] in canN && S in indices && data[S] in canS
-        return [N, S]
+        push!(ps, [N, S])
     elseif N in indices && data[N] in canN && E in indices && data[E] in canE
-        return [N, E]
+        push!(ps, [N, E])
     elseif N in indices && data[N] in canN && W in indices && data[W] in canW
-        return [N, W]
+        push!(ps, [N, W])
     elseif S in indices && data[S] in canS && E in indices && data[E] in canE
-        return [S, E]
+        push!(ps, [S, E])
     elseif S in indices && data[S] in canW && W in indices && data[W] in canW
-        return [S, W]
+        push!(ps, [S, W])
     elseif E in indices && data[E] in canE && W in indices && data[W] in canW
-        return [E, W]
+        push!(ps, [E, W])
     end
-    return [END]
+    return ps
 end
 
-function partOne(data)
+function getSteps(data)
     maps, start = data
     indices = CartesianIndices(maps)
-    starts = findNext(maps, start, indices)
+    starts = findNext(maps, start, indices)[1]
     records = [fill(-1, size(maps, 1), size(maps, 2)) for _ in eachindex(starts)]
     for record in records
         record[start] = 0
     end
+    stepIndex, addstepindex = [start], true
     for (record, index) in zip(records, starts)
         step = 1
         while index != END
+            addstepindex && push!(stepIndex, index)
             record[index] = step
             step += 1
             index = findNext(record, index, indices, Val(Symbol(maps[index])))
         end
+        addstepindex = false
     end
-    steps = fill(0, size(maps, 1), size(maps, 2))
+    steps = fill(-1, size(maps, 1), size(maps, 2))
     for index in eachindex(maps)
         if all(x -> x[index] > -1, records)
             steps[index] = minimum(x -> x[index], records)
@@ -102,23 +106,63 @@ function partOne(data)
             steps[index] = maximum(x -> x[index], records)
         end
     end
+    return steps, stepIndex
+end
+
+function partOne(steps)
     return maximum(steps)
 end
 
-function partTwo(data)
-    return 0
+function findRing(maps, start, hasSearched)
+    indices = CartesianIndices(maps)
+    index = findNext(hasSearched, start, indices, Val(Symbol(maps[start])))
+    if index == END
+        hasSearched[start] = 1
+        return CartesianIndex{2}[]
+    else
+        for _ in 1:2
+            stepIndex = [start]
+            while !(index == END || index == start)
+                push!(stepIndex, index)
+                hasSearched[index] = 1
+                index = findNext(hasSearched, index, indices, Val(Symbol(maps[index])))
+            end
+            if index == start
+                hasSearched[index] = 1
+                return length(stepIndex) > 4 ? stepIndex : CartesianIndex{2}[]
+            end
+        end
+        return CartesianIndex{2}[]
+    end
+end
+
+using Meshes
+
+function partTwo(maps, steps, stepIndex)
+    rings = [stepIndex]
+    newSteps = copy(steps)
+    indices = CartesianIndices(maps)
+    for ind in indices
+        if steps[ind] == -1 && maps[ind] != '.'
+            r = findRing(maps, ind, steps)
+            !isempty(r) && push!(rings, r)
+            newSteps[r] .= 1
+        end
+    end
+    toSearchs = filter(x -> newSteps[x] == -1, indices)
+    areas = map(x -> PolyArea([Point(index.I) for index in x]), rings)
+    return sum(toSearchs) do index
+        return any(area -> Point(index.I) in area, areas) ? 1 : 0
+    end
 end
 
 function day10_main()
     data = readData("data/2023/day10.txt", Val(10))
-    return partOne(data), partTwo(data)
+    steps, stepIndex = getSteps(data)
+    return partOne(steps), partTwo(data[1], copy(steps), stepIndex)
 end
 
-# test
-data = readData("data/2023/day10.txt", Val(10))
-day10_main()
-
-# using BenchmarkTools
-# @info "day10 性能："
-# @btime day10_main()
+using BenchmarkTools
+@info "day10 性能："
+@btime day10_main()
 
