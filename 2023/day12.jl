@@ -8,51 +8,47 @@ function readData(path, ::Val{12})
     return chars, nums
 end
 
-canMatch(data, tocheck) = all(x -> x == '?' || x == tocheck[1], data)
-
-canLeft(data) = all(x -> x == '?' || x == '.', data)
-
-
-function search(str, strIndex, toMarthes, matchIndex, endLen)
-    if matchIndex > length(toMarthes)
-        if (strIndex > length(str) || canLeft(str[strIndex:end]))
-            return 1
-        else
-            return 0
+function search(tokens, ns, tindex=1, nindex=1,
+    toAddt=String[], toAddn=Int[], ps=Tuple{String,Vector{Int}}[]
+)
+    println(ps)
+    oldAddn = copy(toAddn)
+    while tindex <= length(tokens)
+        push!(toAddt, tokens[tindex])
+        tLeftLen = length(tokens[tindex])
+        while nindex <= length(ns)
+            if tLeftLen < ns[nindex]
+                search(tokens, ns, tindex + 1, nindex, toAddt, toAddn, ps)
+                break
+            else
+                push!(toAddn, ns[nindex])
+                tLeftLen -= ns[nindex]
+                search(tokens, ns, tindex + 1, nindex + 1, toAddt, toAddn, ps)
+            end
+            nindex += 1
         end
-    end
-    s = 0
-    while strIndex <= endLen
-        l = length(toMarthes[matchIndex])
-        matchRange = strIndex:(l-1)
-        if canMatch(str[matchRange], toMarthes[matchIndex])
-            s += search(str, strIndex + l, toMarthes, matchIndex + 1, endLen + l - 1)
-        else
-            return 0
+        if nindex >= length(ns)
+            toCheck = toAddn[tindex+1:length(tokens)]
+            if isempty(toCheck) || all(x -> '#' ∉ x, toCheck)
+                push!(ps, (join(toAddt), toAddn))
+            end
+            toAddn, nindex = copy(oldAddn), 1
         end
-        strIndex += 1
+        tindex += 1
+        pop!(toAddt)
     end
-    return s
+    return ps
 end
-
-
 function partOne(data)
-    chars, nums = data
-    s = 0
-    for (cs, ns) in zip(chars, nums)
-        toMatches = String[]
-        for n in ns
-            push!(toMatches, repeat('#', n))
-            push!(toMatches, ".")
-        end
-        pop!(toMatches)
-        matchLen = sum(ns) + length(ns) - 1
-        s += search(cs, 1, toMatches, 1, length(cs) - matchLen + 1)
-    end
-    return s
+    return 0
 end
 
 function partTwo(data)
+    strs, nums = data
+    for (s, ns) in zip(strs, nums)
+        tokens = filter(!isempty, split(s, "."))
+        println(tokens)
+    end
     return 0
 end
 
@@ -63,7 +59,7 @@ end
 
 # test
 # data = readData("data/2023/day12.txt", Val(12))
-day12_main()
+# day12_main()
 
 # using BenchmarkTools
 # @info "day12 性能："
@@ -76,3 +72,4 @@ day12_main()
 #     toMatches = map(x -> repeat('#', x), nums)
 #     matchLen = sum(nums) + length(nums) - 1
 # end
+search(["????#?##???", "??"], [2, 5, 1])
