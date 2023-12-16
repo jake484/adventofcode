@@ -42,16 +42,15 @@ end
 
 function search(::Val{1}, tokens, ns, tindex=1, nindex=1, p=Dict{String,Vector{Int}}(), ps=Dict{String,Vector{Int}}[]
 )
-    println(p)
     if tindex > length(tokens) || nindex > length(ns)
         toCheck = tokens[tindex+1:length(tokens)]
         if nindex >= length(ns) && (isempty(toCheck) || all(x -> '#' ∉ x, toCheck))
-            push!(ps, p)
+            push!(ps, deepcopy(p))
         end
     end
     while tindex <= length(tokens)
         toCheck = tokens[1:tindex-1]
-        !(isempty(p) && (isempty(toCheck) || all(x -> '#' ∉ x, toCheck))) && break
+        !(!isempty(p) || isempty(toCheck) || all(x -> '#' ∉ x, toCheck)) && break
         search(Val(2), tokens, ns, tindex, nindex, p, ps)
         tindex += 1
     end
