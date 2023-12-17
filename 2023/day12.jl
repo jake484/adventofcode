@@ -44,35 +44,34 @@ function search(::Val{1}, tokens, ns, tindex=1, nindex=1, p=Dict{String,Vector{I
 )
     if tindex > length(tokens) || nindex > length(ns)
         toCheck = tokens[tindex+1:length(tokens)]
-        if nindex >= length(ns) && (isempty(toCheck) || all(x -> '#' ∉ x, toCheck))
+        if nindex > length(ns) && (isempty(toCheck) || all(x -> '#' ∉ x, toCheck))
             push!(ps, deepcopy(p))
         end
     end
     while tindex <= length(tokens)
-        toCheck = tokens[1:tindex-1]
-        !(!isempty(p) || isempty(toCheck) || all(x -> '#' ∉ x, toCheck)) && break
-        search(Val(2), tokens, ns, tindex, nindex, p, ps)
+        !search(Val(2), tokens, ns, tindex, nindex, p, ps) && break
         tindex += 1
     end
     return ps
 end
 
 function search(::Val{2}, tokens, ns, tindex=1, nindex=1, p=Dict{String,Vector{Int}}(), ps=Dict{String,Vector{Int}}[])
-    tLeftLen, toAddn = length(tokens[tindex]), Int[]
+    tLeftLen, toAddn, isStartNum = length(tokens[tindex]), Int[], true
     while nindex <= length(ns)
-        if tLeftLen < ns[nindex]
-            search(Val(1), tokens, ns, tindex + 1, nindex, p, ps)
-            break
+        toCompareLen = isStartNum ? ns[nindex] : ns[nindex] + 1
+        if tLeftLen < toCompareLen
+            isStartNum ? (return all(x -> '#' ∉ x, tokens[tindex])) : (break) #  to check if all '?' in this string that cannot match any number
         else
             push!(toAddn, ns[nindex])
-            tLeftLen -= nindex == length(ns) ? ns[nindex] + 1 : ns[nindex]
-            p[tokens[tindex]] = toAddn
+            tLeftLen -= toCompareLen
+            p[tokens[tindex]] = copy(toAddn)
             search(Val(1), tokens, ns, tindex + 1, nindex + 1, p, ps)
-            pop!(p, tokens[tindex])
         end
+        isStartNum = false
         nindex += 1
     end
-    return ps
+    haskey(p, tokens[tindex]) && pop!(p, tokens[tindex])
+    return true
 end
 
 function partOne(data)
@@ -82,8 +81,8 @@ end
 function partTwo(data)
     strs, nums = data
     for (s, ns) in zip(strs, nums)
-        tokens = filter(!isempty, split(s, "."))
-        println(tokens)
+        tokens = map(String, filter(!isempty, split(s, ".")))
+        length(s) > sum(ns) + length(ns) - 1 && (search(Val(1), tokens, ns) |> println)
     end
     return 0
 end
@@ -95,7 +94,7 @@ end
 
 # test
 # data = readData("data/2023/day12.txt", Val(12))
-# day12_main()
+day12_main()
 
 # using BenchmarkTools
 # @info "day12 性能："
@@ -108,4 +107,4 @@ end
 #     toMatches = map(x -> repeat('#', x), nums)
 #     matchLen = sum(nums) + length(nums) - 1
 # end
-search(Val(1), ["????#?##???", "??"], [2, 5, 1])
+# search(Val(1), ["?", "#", "??##??????#???"], [1, 4, 7])
