@@ -8,55 +8,78 @@ function readData(path, ::Val{12})
     return chars, nums
 end
 
-# function search(tokens, ns, tindex=1, nindex=1,
-#     toAddt=String[], toAddn=Int[], ps=Tuple{String,Vector{Int}}[]
-# )
-#     println(ps)
-#     oldAddn = copy(toAddn)
-#     while tindex <= length(tokens)
-#         push!(toAddt, tokens[tindex])
-#         tLeftLen = length(tokens[tindex])
-#         while nindex <= length(ns)
-#             if tLeftLen < ns[nindex]
-#                 search(tokens, ns, tindex + 1, nindex, toAddt, toAddn, ps)
-#                 break
-#             else
-#                 push!(toAddn, ns[nindex])
-#                 tLeftLen -= ns[nindex]
-#                 search(tokens, ns, tindex + 1, nindex + 1, toAddt, toAddn, ps)
-#             end
-#             nindex += 1
-#         end
-#         if nindex >= length(ns)
-#             toCheck = toAddn[tindex+1:length(tokens)]
-#             if isempty(toCheck) || all(x -> '#' ∉ x, toCheck)
-#                 push!(ps, (join(toAddt), toAddn))
-#             end
-#             toAddn, nindex = copy(oldAddn), 1
-#         end
-#         tindex += 1
-#         pop!(toAddt)
-#     end
-#     return ps
-# end
+function getCheckRegex(nums::Vector{Int})
+    rnums = map(n -> join(("[?#]{", n, "}")), nums)
+    rstring = join(rnums, "[?.]+")
+    return Regex(join(("^[?.]*", rstring, "[?.]*\$")))
+end
 
-function search(::Val{1}, tokens, ns, tindex=1, nindex=1, p=Dict{String,Vector{Int}}(), ps=Dict{String,Vector{Int}}[]
+function getRegex(nums::Vector{Int})
+    rnums = map(n -> join(("([#?]{", n, ",})")), nums)
+    rstring = join(rnums, "([?.]{1,}?)")
+    return Regex(join(("^[?.]*?", rstring, "[?.]*?\$")))
+end
+
+function search(chars, index, rstring::Regex, len::Int)
+    str = join(chars)
+    if index > len
+        !isnothing(match(rstring, str)) ? (return 1) : (return 0)
+    end
+    if chars[index] == '?'
+        s = 0
+        for c in ('.', '#')
+            chars[index] = c
+            isnothing(match(rstring, str)) && continue
+            s += search(chars, index + 1, rstring, len)
+        end
+        chars[index] = '?'
+        return s
+    else
+        return search(chars, index + 1, rstring, len)
+    end
+end
+
+function doSearch(chars::String, nums::Vector{Int}, dic=Dict{String,Int}())
+    isempty(nums) && return 1
+    k = join((chars, " ", join(nums, ",")))
+    haskey(dic, k) && return dic[k]
+    chars = collect(chars)
+    res = 0
+    if all(==('?'), chars)
+        ball = length(chars) - sum(nums) - length(nums) + 1
+        basket = length(nums) + 1
+        res = binomial(basket + ball - 1, ball)
+    else
+        res = search(chars, 1, getCheckRegex(nums), length(chars))
+    end
+    dic[k] = res
+    # chars == collect("??#?#?#????") && println("k:", k, " dic[k]:", dic[k])
+    return dic[k]
+end
+
+function search(::Val{1}, tokens, ns, tindex=1, nindex=1, p=Pair{String,Vector{Int}}[], ps=Vector{Pair{String,Vector{Int}}}[]
 )
     if tindex > length(tokens) || nindex > length(ns)
         toCheck = tokens[tindex+1:length(tokens)]
         if nindex > length(ns) && (isempty(toCheck) || all(x -> '#' ∉ x, toCheck))
             push!(ps, deepcopy(p))
+            return ps
         end
     end
     while tindex <= length(tokens)
+        if tindex > 1 && nindex == 1
+            toCheck = tokens[1:tindex-1]
+            (isempty(toCheck) || all(x -> '#' ∉ x, toCheck)) || break
+        end
         !search(Val(2), tokens, ns, tindex, nindex, p, ps) && break
         tindex += 1
     end
     return ps
 end
 
-function search(::Val{2}, tokens, ns, tindex=1, nindex=1, p=Dict{String,Vector{Int}}(), ps=Dict{String,Vector{Int}}[])
-    tLeftLen, toAddn, isStartNum = length(tokens[tindex]), Int[], true
+function search(::Val{2}, tokens, ns, tindex=1, nindex=1, p=Pair{String,Vector{Int}}[], ps=Vector{Pair{String,Vector{Int}}}[])
+    tLeftLen, toAddn = length(tokens[tindex]), Int[]
+    hasPushed, isStartNum = false, true
     while nindex <= length(ns)
         toCompareLen = isStartNum ? ns[nindex] : ns[nindex] + 1
         if tLeftLen < toCompareLen
@@ -64,14 +87,38 @@ function search(::Val{2}, tokens, ns, tindex=1, nindex=1, p=Dict{String,Vector{I
         else
             push!(toAddn, ns[nindex])
             tLeftLen -= toCompareLen
-            p[tokens[tindex]] = copy(toAddn)
+            if !hasPushed
+                push!(p, Pair(tokens[tindex], toAddn))
+                hasPushed = true
+                # else
+                #     p[end][2] = copy(toAddn)
+            end
             search(Val(1), tokens, ns, tindex + 1, nindex + 1, p, ps)
         end
         isStartNum = false
         nindex += 1
     end
-    haskey(p, tokens[tindex]) && pop!(p, tokens[tindex])
+    isempty(p) || pop!(p)
+    # f = findfirst(x -> x[1] == (tokens[tindex]), p)
+    # isnothing(f) || popat!(p, f)
     return true
+end
+
+function getPs(str::String, nums::Vector{Int})
+    tokens = map(String, filter(!isempty, split(str, ".")))
+    return search(Val(1), tokens, nums)
+end
+
+function searchStr(str::String, nums::Vector{Int}, dic::Dict{String,Int}=Dict{String,Int}())
+    ps = getPs(str, nums)
+    res = sum(ps) do p
+        s = 1
+        for (k, v) in p
+            s *= doSearch(k, v, dic)
+        end
+        return s
+    end
+    return res
 end
 
 function partOne(data)
@@ -80,11 +127,16 @@ end
 
 function partTwo(data)
     strs, nums = data
-    for (s, ns) in zip(strs, nums)
-        tokens = map(String, filter(!isempty, split(s, ".")))
-        length(s) > sum(ns) + length(ns) - 1 && (search(Val(1), tokens, ns) |> println)
+    dic, s = Dict{String,Int}(), 0
+    for (str, ns) in zip(strs, nums)
+        s1 = searchStr(str, ns, dic)
+        s2 = doSearch(str, ns)
+        if s1 != s2
+            println("str: ", str, " ns: ", ns, " s1: ", s1, " s2: ", s2)
+        end
+        s += s1
     end
-    return 0
+    return s
 end
 
 function day12_main()
@@ -108,3 +160,15 @@ day12_main()
 #     matchLen = sum(nums) + length(nums) - 1
 # end
 # search(Val(1), ["?", "#", "??##??????#???"], [1, 4, 7])
+
+# begin
+#     time = 5
+#     # cs = ""
+#     cs = "?#.??.???????"
+#     ns = [1, 1, 1, 2]
+#     # cs = join((cs for _ in 1:time), '?')
+#     # ns = reduce(vcat, (ns for _ in 1:time))
+#     getPs(cs, ns) |> display
+#     doSearch(cs, ns) |> display
+#     searchStr(cs, ns) |> display
+# end

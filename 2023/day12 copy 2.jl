@@ -175,12 +175,12 @@ end
 begin
     time = 5
     # cs = ""
-    cs = "????#?##???.??"
-    ns = [2, 5, 1]
+    cs = ".??..??...?##."
+    ns = [1, 1, 3]
     # cs = collect(join((cs for _ in 1:time), '?'))
     # ns = reduce(vcat, (ns for _ in 1:time))
     match(getRegex(ns), join(cs)).captures |> display
     search(collect(cs), copy(ns)) |> println
-    search(collect(cs), 1, getCheckRegex(ns), length(cs)) |> println
+    # search(collect(cs), 1, getCheckRegex(ns), length(cs)) |> println
     doSearch(collect(cs), ns) |> println
 end
