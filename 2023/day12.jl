@@ -53,15 +53,15 @@ function doSearch(chars::String, nums::Vector{Int}, dic=Dict{String,Int}())
         res = search(chars, 1, getCheckRegex(nums), length(chars))
     end
     dic[k] = res
-    # chars == collect("??#?#?#????") && println("k:", k, " dic[k]:", dic[k])
     return dic[k]
 end
 
 function search(::Val{1}, tokens, ns, tindex=1, nindex=1, p=Pair{String,Vector{Int}}[], ps=Vector{Pair{String,Vector{Int}}}[]
 )
     if tindex > length(tokens) || nindex > length(ns)
-        toCheck = tokens[tindex+1:length(tokens)]
-        if nindex > length(ns) && (isempty(toCheck) || all(x -> '#' ∉ x, toCheck))
+        # toCheck = tokens[tindex+1:length(tokens)]
+        # if nindex > length(ns) && (isempty(toCheck) || all(x -> '#' ∉ x, toCheck))
+        if nindex > length(ns) && all(x -> !isempty(x[2]) || (isempty(x[2]) && '#' ∉ x[1]), p)
             push!(ps, deepcopy(p))
             return ps
         end
@@ -71,7 +71,9 @@ function search(::Val{1}, tokens, ns, tindex=1, nindex=1, p=Pair{String,Vector{I
             toCheck = tokens[1:tindex-1]
             (isempty(toCheck) || all(x -> '#' ∉ x, toCheck)) || break
         end
-        !search(Val(2), tokens, ns, tindex, nindex, p, ps) && break
+        all(x -> !isempty(x[2]) || (isempty(x[2]) && '#' ∉ x[1]), p) || break
+        search(Val(2), tokens, ns, tindex, nindex, p, ps) || break
+        # push!(p, Pair(tokens[tindex], Int[]))
         tindex += 1
     end
     return ps
@@ -79,7 +81,8 @@ end
 
 function search(::Val{2}, tokens, ns, tindex=1, nindex=1, p=Pair{String,Vector{Int}}[], ps=Vector{Pair{String,Vector{Int}}}[])
     tLeftLen, toAddn = length(tokens[tindex]), Int[]
-    hasPushed, isStartNum = false, true
+    push!(p, Pair(tokens[tindex], toAddn))
+    isStartNum = true
     while nindex <= length(ns)
         toCompareLen = isStartNum ? ns[nindex] : ns[nindex] + 1
         if tLeftLen < toCompareLen
@@ -87,14 +90,9 @@ function search(::Val{2}, tokens, ns, tindex=1, nindex=1, p=Pair{String,Vector{I
         else
             push!(toAddn, ns[nindex])
             tLeftLen -= toCompareLen
-            if !hasPushed
-                push!(p, Pair(tokens[tindex], toAddn))
-                hasPushed = true
-                # else
-                #     p[end][2] = copy(toAddn)
-            end
             search(Val(1), tokens, ns, tindex + 1, nindex + 1, p, ps)
         end
+
         isStartNum = false
         nindex += 1
     end
@@ -146,7 +144,7 @@ end
 
 # test
 # data = readData("data/2023/day12.txt", Val(12))
-day12_main()
+# day12_main()
 
 # using BenchmarkTools
 # @info "day12 性能："
@@ -161,14 +159,14 @@ day12_main()
 # end
 # search(Val(1), ["?", "#", "??##??????#???"], [1, 4, 7])
 
-# begin
-#     time = 5
-#     # cs = ""
-#     cs = "?#.??.???????"
-#     ns = [1, 1, 1, 2]
-#     # cs = join((cs for _ in 1:time), '?')
-#     # ns = reduce(vcat, (ns for _ in 1:time))
-#     getPs(cs, ns) |> display
-#     doSearch(cs, ns) |> display
-#     searchStr(cs, ns) |> display
-# end
+begin
+    time = 5
+    # cs = ""
+    cs = "??#?.#..????"
+    ns = [3, 1, 2]
+    # cs = join((cs for _ in 1:time), '?')
+    # ns = reduce(vcat, (ns for _ in 1:time))
+    getPs(cs, ns) |> display
+    doSearch(cs, ns) |> display
+    searchStr(cs, ns) |> display
+end
