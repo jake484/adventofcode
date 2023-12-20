@@ -1,3 +1,5 @@
+using Intervals
+
 function evalFun(name, rules)
     rule = replace(rules, ":" => " ", ">" => "[1]>", "<" => "[1]<")
     rule = split(rule, c -> c == ',')
@@ -7,7 +9,6 @@ function evalFun(name, rules)
     eval(Meta.parse(str))
     return str
 end
-
 
 function readData(path, ::Val{19})
     data = readlines(path)
@@ -35,18 +36,18 @@ const a = [0]
 const s = [0]
 
 function partOne(data)
-    lmt = 1:10
+    lmt = 1:2
     res = 0
-    for str in ["x=$i,m=$j,a=$m,s=$n" for i in lmt, j in lmt, m in lmt, n in lmt]
+    for str in data
         str = replace(str, "=" => "[1]=", "," => ";")
         eval(Meta.parse(str))
-        (in()) && (res += 1)
+        (in()) && (res += x[1] + m[1] + a[1] + s[1])
     end
     return res
 end
 
 const RSTR = r"([xmas]+)([<>])(\d+):([a-zAR]+)"
-const INTERVAL = 101.. 105
+const INTERVAL = 1 .. 4000
 getInterval(num::String, ::Val{:<}) = Interval(1, parse(Int, num) - 1)
 getInterval(num::String, ::Val{:>}) = Interval(parse(Int, num) + 1, 4000)
 getReverseInterval(num::String, ::Val{:<}) = Interval(parse(Int, num), 4000)
@@ -62,7 +63,9 @@ function search(rules, name, ranges=Pair{String,Dict{String,AbstractInterval}}[]
             var, sym, num, nextName = map(String, match(RSTR, part).captures)
             reverseInterval = range[var] ∩ getReverseInterval(num, Val(Symbol(sym)))
             range[var] = range[var] ∩ getInterval(num, Val(Symbol(sym)))
+            old = deepcopy(range)
             search(rules, nextName, ranges, range)
+            range = old
             range[var] = reverseInterval
         else
             search(rules, String(part), ranges, range)
@@ -71,37 +74,30 @@ function search(rules, name, ranges=Pair{String,Dict{String,AbstractInterval}}[]
     return ranges
 end
 
-using Intervals
-
 function len(x::AbstractInterval)
     isempty(x) && return 0
     return last(x) - first(x) + 1
 end
 
 function partTwo(data)
-    rules, nums = data
+    rules, _ = data
     ranges = search(rules, "in")
     res = 0
     for (sym, range) in ranges
         sym == "R" && continue
-        ss = 1
-        for (k, v) in range
-            ss *= len(v)
-        end
-        res += ss
+        res += prod(len, values(range) |> collect) |> Int
     end
     return res
 end
 
-function day19_main()
-    data = readData("data/2023/day19.txt", Val(19))
+function day19_main(data)
     return partOne(data[2]), partTwo(data)
 end
 
 # test
 data = readData("data/2023/day19.txt", Val(19))
-day19_main()
+day19_main(data)
 
-# using BenchmarkTools
-# @info "day19 性能："
-# @btime day19_main(data)
+using BenchmarkTools
+@info "day19 性能："
+@btime day19_main(data)
