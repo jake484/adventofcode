@@ -1,67 +1,98 @@
-mutable struct FlipFlop
+abstract type Modules end
+
+using DataStructures
+
+mutable struct FlipFlop <: Modules
     state::Bool
     sendTo::Vector{String}
     receiveFrom::Dict{String,Bool}
     recentPulse::Bool
+    sendPulse::Union{Bool,Nothing}
     function FlipFlop()
         new(false, String[], Dict{String,Bool}(), false, false)
     end
 end
 
-mutable struct Broadcaster
+mutable struct Broadcaster <: Modules
     state::Bool
     sendTo::Vector{String}
     receiveFrom::Dict{String,Bool}
     recentPulse::Bool
+    sendPulse::Union{Bool,Nothing}
     function Broadcaster()
         new(false, String[], Dict{String,Bool}(), false, false)
     end
 end
 
-mutable struct Conjunction
+mutable struct Conjunction <: Modules
     state::Bool
     sendTo::Vector{String}
     receiveFrom::Dict{String,Bool}
     recentPulse::Bool
+    sendPulse::Union{Bool,Nothing}
     function Conjunction()
         new(false, String[], Dict{String,Bool}(), false, false)
     end
 end
-mutable struct Output end
 
-function process(ff::FlipFlop, name::String)
-    sendPluse = false
+mutable struct Output <: Modules
+    state::Bool
+    sendTo::Vector{String}
+    receiveFrom::Dict{String,Bool}
+    recentPulse::Bool
+    sendPulse::Union{Bool,Nothing}
+    function Output()
+        new(false, String[], Dict{String,Bool}(), false, nothing)
+    end
+end
+
+function process(ff::FlipFlop)
     if !ff.recentPulse
         ff.state = !ff.state
-        sendPluse = ff.state
+        ff.sendPulse = ff.state
+    else
+        ff.sendPulse = nothing
     end
-    sendPluse = nothing
-    for receiver in ff.sendTo
-        eval(Symbol(receiver)).receiveFrom[name] = sendPluse
-        eval(Symbol(receiver)).recentPulse = sendPluse
-    end
-    return sendPluse, length(ff.sendTo)
 end
-
-process(e::Output, name) = nothing
-
-function process(b::Broadcaster, name::String)
-    sendPluse = false
-    for receiver in ff.sendTo
-        eval(Symbol(receiver)).receiveFrom[name] = sendPluse
-        eval(Symbol(receiver)).recentPulse = sendPluse
-    end
-    return sendPluse, length(b.sendTo)
+process(::Output) = nothing
+function process(b::Broadcaster)
+    b.sendPulse = false
 end
-
-function process(c::Conjunction, name::String)
+function process(c::Conjunction)
     c.state = c.recentPulse
-    sendPluse = !all(values(c.receiveFrom))
-    for receiver in c.sendTo
+    c.sendPulse = !all(values(c.receiveFrom))
+end
+
+function send(m::Modules, name::String)
+    m isa Output && return nothing, 0
+    isnothing(m.sendPulse) && return nothing, 0
+    sendPluse = m.sendPulse
+    for receiver in m.sendTo
         eval(Symbol(receiver)).receiveFrom[name] = sendPluse
         eval(Symbol(receiver)).recentPulse = sendPluse
     end
-    return sendPluse, length(c.sendTo)
+    return sendPluse, length(m.sendTo)
+end
+
+getAllStates(names) = map(x -> eval(Symbol(x)).state, names)
+
+function addN(nfalses, ntrues, n, pulse::Union{Bool,Nothing})
+    isnothing(pulse) && return nfalses, ntrues
+    pulse ? (ntrues += n) : (nfalses += n)
+    return nfalses, ntrues
+end
+
+process(names::Dict{String,Bool}) = map(name -> process(eval(Symbol(name))), names)
+
+function send(names::Vector{String})
+    nfalses = ntrues = 0
+    ns = OrderedDict{String,Bool}()
+    for name in names
+        pulse, n = send(eval(Symbol(name)), name)
+        nfalses, ntrues = addN(nfalses, ntrues, n, pulse)
+        isnothing(pulse) || map(x -> ns[x] = true, eval(Symbol(name)).sendTo)
+    end
+    return nfalses, ntrues, ns
 end
 
 function readData(path, ::Val{20})
@@ -100,49 +131,29 @@ function readData(path, ::Val{20})
     return names
 end
 
-getAllStates(names) = map(x -> eval(Symbol(x)).state, names)
-
-function pushingButtonOnce(senders, receivers)
-    nextNames = broadcaster.sendTo
-    nextPulses = map(x -> process(eval(Symbol(x)), "broadcaster")[1], nextNames)
-    nfalses, ntrues = 1 + length(nextPulses), 0
-    while any(!isnothing, nextPulses)
-        ps = Union{Bool,Nothing}[]
-        ns = String[]
-        for (name, pulse) in zip(nextNames, nextPulses)
-            if !isnothing(pulse)
-                append!(ns, senders[name])
-                p = map(x -> process(pulse, eval(Symbol(x)), receivers, x), senders[name])
-                if pulse
-                    ntrues += length(p)
-                else
-                    nfalses += length(p)
-                end
-                append!(ps, p)
-            end
-        end
-        nextNames, nextPulses = ns, ps
-        # nfalses += count(==(false), nextPulses)
-        # ntrues += count(==(true), nextPulses)
-        # println("nextNames: ", nextNames, " nextPulses: ", nextPulses)
-        # println("nfalses: ", nfalses, " ntrues: ", ntrues)
+function pushingButtonOnce()
+    nf, nt, nextNames = send(["broadcaster"])
+    nfalses, ntrues = 1 + nf, nt
+    while !isempty(nextNames)
+        nextNames = collect(keys(nextNames))
+        process(nextNames)
+        # display(nextNames)
+        nf, nt, nextNames = send(nextNames)
+        nfalses, ntrues = nfalses + nf, ntrues + nt
     end
-    # println("nfalses: ", nfalses, " ntrues: ", ntrues)
     return nfalses, ntrues
 end
 
-function partOne(data)
-    senders, receivers, names = data
-    times = 0
-    nfalses, ntrues = 0, 0
-    for _ in 1:1
-        nf, nt = pushingButtonOnce(senders, receivers)
+function partOne(names)
+    times = nfalses = ntrues = 0
+    for _ in 1:100
+        nf, nt = pushingButtonOnce()
         nfalses, ntrues = nfalses + nf, ntrues + nt
         times += 1
-        # if all(==(false), getAllStates(names))
-        #     println("times: ", times, " nfalses: ", nfalses, " ntrues: ", ntrues)
-        #     break
-        # end
+        if all(==(false), getAllStates(names))
+            println("times: ", times, " nfalses: ", nfalses, " ntrues: ", ntrues)
+            break
+        end
     end
     return nfalses * ntrues
 end
@@ -158,7 +169,7 @@ end
 
 # test
 data = readData("data/2023/day20.txt", Val(20))
-# day20_main()
+day20_main()
 
 # using BenchmarkTools
 # @info "day20 性能："
