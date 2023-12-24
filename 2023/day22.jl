@@ -3,13 +3,13 @@ using Meshes, DataStructures
 struct Brick
     segment::Segment
     levels::Vector{Int}
-    inters::Vector{Segment}
     function Brick(seg, levels)
-        new(seg, levels, Segment[])
+        new(seg, levels)
     end
 end
 
 Base.intersect(a::Brick, b::Brick) = intersect(a.segment, b.segment)
+Base.isequal(a::Brick, b::Brick) = isequal(a.segment, b.segment) && isequal(a.levels, b.levels)
 
 function readData(path, ::Val{22})
     data = Brick[]
@@ -41,11 +41,12 @@ function fall!(data)
     return Setted
 end
 
-function getLevelBrick(setted)
+function getLevelBrick(setted, ::Val{T}) where {T}
+    sort!(setted, by=x -> x.levels[2], rev=true)
     levelBricks = OrderedDict{Int,Vector{Brick}}()
     for b in setted
-        haskey(levelBricks, b.levels[1]) || (levelBricks[b.levels[1]] = Brick[])
-        push!(levelBricks[b.levels[1]], b)
+        haskey(levelBricks, b.levels[T]) || (levelBricks[b.levels[T]] = Brick[])
+        push!(levelBricks[b.levels[T]], b)
     end
     return levelBricks
 end
@@ -53,17 +54,17 @@ end
 
 function partOne(data)
     setted = fall!(data)
-    levelBricks = getLevelBrick(setted)
+    levelBricks = getLevelBrick(setted, Val(2))
     _, highLevelBricks = popfirst!(levelBricks)
     num = length(highLevelBricks)
     while !isempty(levelBricks)
         _, lowerLevelBricks = popfirst!(levelBricks)
-        canNotTakeBricks = Brick[]
+        canNotTakeBricks = String[]
         for highBrick in highLevelBricks
-            inters = Brick[]
+            inters = String[]
             for lowBrick in lowerLevelBricks
                 if !isnothing(intersect(highBrick, lowBrick)) && highBrick.levels[1] - lowBrick.levels[2] == 1
-                    push!(inters, lowBrick)
+                    push!(inters, string(lowBrick))
                     length(inters) > 1 && break
                 end
             end
@@ -71,7 +72,7 @@ function partOne(data)
                 append!(canNotTakeBricks, inters)
             end
         end
-        num += length(highLevelBricks) - length(canNotTakeBricks)
+        num += length(lowerLevelBricks) - length(Set(canNotTakeBricks))
         highLevelBricks = lowerLevelBricks
     end
     return num
@@ -90,7 +91,7 @@ end
 # test
 data = readData("data/2023/day22.txt", Val(22))
 day22_main()
-
+# fall!(data)
 # using BenchmarkTools
 # @info "day22 性能："
 # @btime day22_main()
