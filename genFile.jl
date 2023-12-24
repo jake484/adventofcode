@@ -19,7 +19,7 @@ function main(index::Int, year::Int=2023)
 
     # test
     data = readData("data/$year/day$index.txt", Val($index))
-    day$(index)_main()
+    # day$(index)_main()
 
     # using BenchmarkTools
     # @info "day$index 性能："
@@ -35,4 +35,4 @@ function main(index::Int, year::Int=2023)
     end
 end
 
-main(22)
+main(23)
