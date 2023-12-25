@@ -1,4 +1,5 @@
 using Meshes
+using JuMP, COPT, HiGHS
 
 function readData(path, ::Val{24})
     data = Tuple[]
@@ -43,8 +44,29 @@ function partOne(data)
     return s
 end
 
+# function partTwo(data)
+#     model = Model(COPT.Optimizer)
+#     @variable(model, X >= 0, Int)
+#     @variable(model, V, Int)
+#     @variable(model, t[1:length(data)] >= 0, Int)
+#     for i in eachindex(data)
+#         x, y, z, vx, vy, vz = data[i]
+#         x = x + y + z
+#         vx = vx + vy + vz
+#         @constraint(model, X == x + vx * t[i])
+#     end
+#     @objective(model, Min, sum(t))
+#     optimize!(model)
+#     return round(objective_value(model))
+# end
+
 function partTwo(data)
-    return 0
+    newdata = map(x -> (sum(x[1:3]), sum(x[4:6])), data)
+    minx2 = minimum(map(x -> Int128(x[2]), newdata))
+    newdata = map(x -> (x[1], x[2] - minx2 + 1), newdata)
+    ranges = intersect(typemax(Int):-1:1, map(x -> x[1]:x[2]:typemax(Int), newdata)...)
+    # ranges = map(x -> x[2] < 0 ? (x[1]:x[2]:typemin(Int)) : (x[1]:x[2]:typemax(Int)), newdata)
+    return ranges
 end
 
 function day24_main()

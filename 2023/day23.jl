@@ -40,6 +40,8 @@ function getNeighbours(maps, hasGone, pos, ::Val{T}) where {T}
     return filter(i -> checkbounds(Bool, maps, i) && !hasGone[i] && canSearch(maps, pos, i, Val(T)), neighbours)
 end
 
+
+
 function search(maps, hasGone, dic, pos, END, ::Val{1})
     haskey(dic, pos) && dic[pos] > 0 && return dic[pos]
     pos == END && (return 0)
@@ -79,37 +81,59 @@ function search(maps, hasGone, dic, pos, END, ::Val{2})
     hasGone[pos] = false
     while !isempty(indices)
         index = pop!(indices)
-        (haskey(dic, index) && dic[index] > 0) || (dic[index] = dic[pos] + 1)
-        (haskey(dic, index) && dic[index] > 0) || (hasGone[index] = false)
+        dic[index] = dic[pos] + 1
+        hasGone[index] = false
         pos = index
     end
     return dic[pos]
 end
 
-# function search(maps, hasGone, dic, pos, END, ::Val{3})
-#     pos == END && (return 0)
-#     hasGone[pos] = true
-#     neighbours = getNeighbours(maps, hasGone, pos, Val(2))
-#     indices = CartesianIndex{2}[]
-#     while length(neighbours) <= 1
-#         if isempty(neighbours)
-#             hasGone[pos] = false
-#             hasGone[indices] .= false
-#             return typemin(Int)
+function search(maps, hasGone, dic, pos, END, ::Val{3})
+    pos == END && (return 0)
+    hasGone[pos] = true
+    neighbours = getNeighbours(maps, hasGone, pos, Val(2))
+    indices = CartesianIndex{2}[]
+    while length(neighbours) <= 1
+        if isempty(neighbours)
+            hasGone[pos] = false
+            hasGone[indices] .= false
+            return typemin(Int)
+        end
+        push!(indices, pos)
+        pos = neighbours[1]
+        hasGone[pos] = true
+        if pos == END
+            hasGone[pos] = false
+            hasGone[indices] .= false
+            return length(indices)
+        end
+        neighbours = getNeighbours(maps, hasGone, pos, Val(2))
+    end
+    m = maximum(x -> search(maps, hasGone, dic, x, END, Val(3)), neighbours) + 1
+    hasGone[indices] .= false
+    hasGone[pos] = false
+    return m + length(indices)
+end
+
+# function getNeighbours(maps, hasGone::Matrix{Int}, pos)
+#     neighbours = [pos + ToN, pos + ToS, pos + ToW, pos + ToE]
+#     return filter(i -> checkbounds(Bool, maps, i) && hasGone[i] == -1 && canSearch(maps, pos, i, Val(T)), neighbours)
+# end
+
+# function search(maps, dic, START, END, ::Val{4})
+#     dic[END] = 0
+#     hasGone = fill(-1, size(maps))
+#     neighbours = getNeighbours(maps, hasGone, END)
+#     pos = END
+#     while true
+#         newNeighbours = CartesianIndex{2}[]
+#         for neighbour in neighbours
+#             hasGone[neighbour] = max(hasGone[neighbour], hasGone[pos] + 1)
+#             append!(newNeighbours, getNeighbours(maps, hasGone, neighbour))
 #         end
-#         push!(indices, pos)
-#         pos = neighbours[1]
-#         hasGone[pos] = true
-#         if pos == END
-#             hasGone[pos] = false
-#             hasGone[indices] .= false
-#             return length(indices)
-#         end
-#         neighbours = getNeighbours(maps, hasGone, pos, Val(2))
+#         neighbours = newNeighbours
 #     end
-#     m = maximum(x -> search(maps, hasGone, dic, x, END, Val(3)), neighbours) + 1
-#     hasGone[indices] .= false
-#     hasGone[pos] = false
+
 #     return m + length(indices)
 # end
 

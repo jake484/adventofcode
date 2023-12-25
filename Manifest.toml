@@ -2,7 +2,7 @@
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "7ce9320c1f7633df649aa267699e32fcaec2e205"
+project_hash = "654e948e5b262ccda9f7c145370b05dbf4353c35"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "faa260e4cb5aba097a73fab382dd4b5819d8ec8c"
@@ -51,6 +51,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "19a35467a82e236ff51bc17a3a44b69ef35185a2"
 uuid = "6e34b625-4abd-537c-b88f-471c36dfa7a0"
 version = "1.0.8+0"
+
+[[deps.COPT]]
+deps = ["LazyArtifacts", "Libdl", "LinearAlgebra", "MathOptInterface", "Pkg", "Random", "SparseArrays"]
+git-tree-sha1 = "4c0dfdefba502d4f25c61750ce39bdb8628043e8"
+uuid = "227a2e2d-e949-4d8e-a1da-7384fe6f0b9f"
+version = "1.1.13"
 
 [[deps.ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
